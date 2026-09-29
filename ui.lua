@@ -2165,7 +2165,7 @@ local Library do
                         local ok, img = pcall(function()
                             return _Players:GetUserThumbnailAsync(_LP.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size100x100)
                         end)
-                        if ok and img and Avatar and Avatar.Parent then
+                        if ok and typeof(img) == "string" and img ~= "" and Avatar and Avatar.Parent then
                             Avatar.Image = img
                         end
                     end)
@@ -2394,7 +2394,11 @@ local Library do
                 Window = self,
 
                 Name = Data.Name or Data.name or "Page",
-                Icon = Data.Icon or Data.icon or "rbxassetid://72196061405823",
+                Icon = (function()
+                    local _i = Data.Icon or Data.icon or "rbxassetid://72196061405823"
+                    if type(_i) == "string" and _i:match("^%d+$") then _i = "rbxassetid://" .. _i end
+                    return _i
+                end)(),
 
                 Items = { },
                 Active = false
@@ -2604,7 +2608,11 @@ Items["Page"] = Instances:Create("Frame", {
 
                 Name = Data.Name or Data.name or "Section",
                 Side = Data.Side or Data.side or 1,
-                Icon = Data.Icon or Data.icon or "rbxassetid://127136375066593",
+                Icon = (function()
+                    local _i = Data.Icon or Data.icon or "rbxassetid://127136375066593"
+                    if type(_i) == "string" and _i:match("^%d+$") then _i = "rbxassetid://" .. _i end
+                    return _i
+                end)(),
 
                 Items = { }
             }
