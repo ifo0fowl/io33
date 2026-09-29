@@ -5159,8 +5159,8 @@ function Library:CreateSettingsPage(Window, Watermark)
                     
                     if #validServers > 0 then
                         local randomServer = validServers[math.random(1, #validServers)]
-                        game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, randomServer.id, game:GetService("Players").LocalPlayer)
-                    else
+                        -- Made By Havez"TeleportService"):TeleportToPlaceInstance(game.PlaceId, randomServer.id, game:GetService("Players").LocalPlayer)
+                    Libraryelse
                         Library.Notifications:Create({Name = "No other servers found!", LifeTime = 3})
                     end
                 else
