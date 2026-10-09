@@ -192,12 +192,12 @@ local Library do
 
     local Themes = {
         ["Preset"] = {
-            ["Background"] = FromRGB(5, 7, 11),
-            ["Inline"] = FromRGB(10, 18, 32),
+            ["Background"] = FromRGB(2, 3, 6),
+            ["Inline"] = FromRGB(5, 9, 15),
             ["Outline"] = FromRGB(0, 120, 255),
             ["Text"] = FromRGB(220, 230, 245),
-            ["Dark Text"] = FromRGB(140, 160, 190),
-            ["Element"] = FromRGB(10, 35, 70),
+            ["Dark Text"] = FromRGB(125, 145, 175),
+            ["Element"] = FromRGB(5, 20, 42),
             ["Accent"] = FromRGB(0, 140, 255)
         }
     }
@@ -1106,13 +1106,13 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(0, 180, 0, 0),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(13, 15, 18)
+                    BackgroundColor3 = FromRGB(4, 5, 7)
                 })  Items["ColorpickerWindow"]:AddToTheme({BackgroundColor3 = "Background"})
                 
                 Instances:Create("UIStroke", {
                     Parent = Items["ColorpickerWindow"].Instance,
                     Name = "\0",
-                    Color = FromRGB(26, 30, 36),
+                    Color = FromRGB(9, 14, 22),
                     ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 }):AddToTheme({Color = "Outline"})
                 
@@ -1551,7 +1551,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(0, 67, 0, 0),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(13, 15, 18)
+                    BackgroundColor3 = FromRGB(4, 5, 7)
                 })  Items["KeybindWindow"]:AddToTheme({BackgroundColor3 = "Background"})
                 
                 Instances:Create("UICorner", {
@@ -1563,7 +1563,7 @@ local Library do
                 Instances:Create("UIStroke", {
                     Parent = Items["KeybindWindow"].Instance,
                     Name = "\0",
-                    Color = FromRGB(26, 30, 36),
+                    Color = FromRGB(9, 14, 22),
                     ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 }):AddToTheme({Color = "Outline"})
                 
@@ -2567,7 +2567,7 @@ local Library do
                         BorderColor3 = FromRGB(0, 0, 0),
                         BorderSizePixel = 0,
                         AutomaticSize = Enum.AutomaticSize.X,
-                        BackgroundColor3 = FromRGB(13, 15, 18)
+                        BackgroundColor3 = FromRGB(4, 5, 7)
                     })  Items["Notification"]:AddToTheme({BackgroundColor3 = "Background"})
                     
                     Instances:Create("UICorner", {
@@ -2579,7 +2579,7 @@ local Library do
                     Items["Stroke"] = Instances:Create("UIStroke", {
                         Parent = Items["Notification"].Instance,
                         Name = "\0",
-                        Color = FromRGB(26, 30, 36),
+                        Color = FromRGB(9, 14, 22),
                         ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                     })  Items["Stroke"]:AddToTheme({Color = "Outline"})
                     
@@ -2722,7 +2722,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(0, 622, 0, 502),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(13, 15, 18)
+                    BackgroundColor3 = FromRGB(4, 5, 7)
                 })  Items["MainFrame"]:AddToTheme({BackgroundColor3 = "Background"})
 
                 Items["MainFrame"]:MakeDraggable()
@@ -2757,7 +2757,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(1, 0, 0, 50),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(22, 25, 30)
+                    BackgroundColor3 = FromRGB(7, 10, 15)
                 })  Items["Top"]:AddToTheme({BackgroundColor3 = "Inline"})
                 
                 Instances:Create("UICorner", {
@@ -2774,7 +2774,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(1, 0, 0, 8),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(22, 25, 30)
+                    BackgroundColor3 = FromRGB(7, 10, 15)
                 }):AddToTheme({BackgroundColor3 = "Inline"})
                 
                 Instances:Create("Frame", {
@@ -2785,7 +2785,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(1, 0, 0, 1),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(26, 30, 36)
+                    BackgroundColor3 = FromRGB(9, 14, 22)
                 }):AddToTheme({BackgroundColor3 = "Outline"})
                 
                 Instances:Create("UIGradient", {
@@ -2822,7 +2822,7 @@ local Library do
                     Position = UDim2New(0, 10, 0.5, 0),
                     Size = UDim2New(0, 34, 0, 34),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(10, 35, 70),
+                    BackgroundColor3 = FromRGB(5, 20, 42),
                     ZIndex = 20
                 }) Items["BrandBadge"]:AddToTheme({BackgroundColor3 = "Element"})
 
@@ -2958,7 +2958,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(1, 0, 0, 50),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(22, 25, 30)
+                    BackgroundColor3 = FromRGB(7, 10, 15)
                 })  Items["Bottom"]:AddToTheme({BackgroundColor3 = "Inline"})
                 
                 Instances:Create("UICorner", {
@@ -2973,7 +2973,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(1, 0, 0, 8),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(22, 25, 30)
+                    BackgroundColor3 = FromRGB(7, 10, 15)
                 }):AddToTheme({BackgroundColor3 = "Inline"})
                 
                 Instances:Create("Frame", {
@@ -2982,7 +2982,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(1, 0, 0, 1),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(26, 30, 36)
+                    BackgroundColor3 = FromRGB(9, 14, 22)
                 }):AddToTheme({BackgroundColor3 = "Outline"})
                 
                 Instances:Create("UIGradient", {
@@ -3034,7 +3034,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(0, 33, 0, 30),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(13, 15, 18)
+                    BackgroundColor3 = FromRGB(4, 5, 7)
                 })  Items["Search"]:AddToTheme({BackgroundColor3 = "Background"})
                 
                 Instances:Create("UICorner", {
@@ -3065,7 +3065,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(0, 30, 0, 30),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(13, 15, 18)
+                    BackgroundColor3 = FromRGB(4, 5, 7)
                 })  Items["Settings"]:AddToTheme({BackgroundColor3 = "Background"})
                 
                 Instances:Create("UICorner", {
@@ -3228,7 +3228,7 @@ local Library do
                         Size = UDim2New(0, 325, 0, 159),
                         ZIndex = 2,
                         AutomaticSize = Enum.AutomaticSize.Y,
-                        BackgroundColor3 = FromRGB(21, 21, 24)
+                        BackgroundColor3 = FromRGB(4, 5, 7)
                     }) SettingsItems["Settings"]:AddToTheme({BackgroundColor3 = "Background"})
                     
                     Instances:Create("UICorner", {
@@ -3251,7 +3251,7 @@ local Library do
                         Size = UDim2New(1, -16, 0, 22),
                         ZIndex = 2,
                         TextSize = 14,
-                        BackgroundColor3 = FromRGB(27, 26, 29)
+                        BackgroundColor3 = FromRGB(5, 20, 42)
                     }) SettingsItems["CloseButton"]:AddToTheme({BackgroundColor3 = "Element"})
                 
                     Instances:Create("UICorner", {
@@ -3835,7 +3835,7 @@ local Library do
                     Size = UDim2New(0, 30, 0, 30),
                     BorderSizePixel = 0,
                     TextSize = 14,
-                    BackgroundColor3 = FromRGB(13, 15, 18)
+                    BackgroundColor3 = FromRGB(4, 5, 7)
                 })  Items["Inactive"]:AddToTheme({BackgroundColor3 = "Background"})
                 
                 Instances:Create("UICorner", {
@@ -4081,7 +4081,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     BorderSizePixel = 0,
                     AutomaticSize = Enum.AutomaticSize.Y,
-                    BackgroundColor3 = FromRGB(22, 25, 30)
+                    BackgroundColor3 = FromRGB(7, 10, 15)
                 })  Items["Section"]:AddToTheme({BackgroundColor3 = "Inline"})
                 
                 Instances:Create("UICorner", {
@@ -4092,7 +4092,7 @@ local Library do
                 Instances:Create("UIStroke", {
                     Parent = Items["Section"].Instance,
                     Name = "\0",
-                    Color = FromRGB(26, 30, 36),
+                    Color = FromRGB(9, 14, 22),
                     ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 }):AddToTheme({Color = "Outline"})
                 
@@ -4931,7 +4931,7 @@ local Library do
                     Size = UDim2New(0, Items["RealDropdown"].Instance.AbsoluteSize.X, 0, 127),
                     BorderSizePixel = 0,
                     TextSize = 14,
-                    BackgroundColor3 = FromRGB(13, 15, 18)
+                    BackgroundColor3 = FromRGB(4, 5, 7)
                 })  Items["OptionHolder"]:AddToTheme({BackgroundColor3 = "Background"})
                 
                 Instances:Create("UICorner", {
@@ -4943,7 +4943,7 @@ local Library do
                 Instances:Create("UIStroke", {
                     Parent = Items["OptionHolder"].Instance,
                     Name = "\0",
-                    Color = FromRGB(26, 30, 36),
+                    Color = FromRGB(9, 14, 22),
                     ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 }):AddToTheme({Color = "Outline"})
                 
