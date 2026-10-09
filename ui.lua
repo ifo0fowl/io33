@@ -267,8 +267,11 @@ local Library do
                 [Property] = Visibility and OldTransparency or 1
             }, true)
 
-            Library:Connect(NewTween.Tween.Completed, function()
-                if not Visibility then 
+            -- Direct connection: the old Library:Connect here appended a permanent
+            -- entry to Library.Connections on every single fade (hovers, opens,
+            -- tab switches), growing that table forever. Behavior unchanged.
+            NewTween.Tween.Completed:Connect(function()
+                if not Visibility then
                     task.wait()
                     Item[Property] = OldTransparency
                 end
@@ -463,6 +466,11 @@ local Library do
         
             self:Connect("InputBegan", function(Input)
                 if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+                    local EdgeClaimed = false
+                    pcall(function() EdgeClaimed = Gui:GetAttribute("EdgeResizing") == true end)
+                    if EdgeClaimed then
+                        return
+                    end
                     Dragging = true
                     DragStart = Input.Position
                     StartPosition = Gui.Position
@@ -493,27 +501,37 @@ local Library do
         end
 
         Instances.MakeResizeable = function(self, Minimum, Maximum)
-            if not self.Instance then 
+            if not self.Instance then
                 return
             end
 
             local Gui = self.Instance
 
-            local Resizing = false 
+            Minimum = Minimum or Vector2New(440, 320)
+            Maximum = Maximum or Vector2New(9999, 9999)
+
+            local DefaultSize = Gui.Size
+
+            local Resizing = false
             local CurrentSide = nil
 
-            local StartMouse = nil 
-            local StartPosition = nil 
+            local StartMouse = nil
+            local StartPosition = nil
             local StartSize = nil
-            
-            local EdgeThickness = 2
+            local LastClick = 0
 
-            local MakeEdge = function(Name, Position, Size)
+            -- 6px grab strips (old 2px was nearly unhittable) + corner grips
+            -- for diagonal resizing. No bottom-right corner: the UIScale
+            -- handle owns that corner.
+            local EdgeThickness = 6
+            local CornerSize = 14
+
+            local MakeEdge = function(Position, Size)
                 local Button = Instances:Create("TextButton", {
                     Name = "\0",
                     Size = Size,
                     Position = Position,
-                    BackgroundColor3 = FromRGB(166, 147, 243),
+                    BackgroundColor3 = FromRGB(0, 140, 255),
                     BackgroundTransparency = 1,
                     Text = "",
                     BorderSizePixel = 0,
@@ -526,59 +544,67 @@ local Library do
             end
 
             local Edges = {
-                {Button = MakeEdge(
-                    "Left", 
-                    UDim2New(0, 0, 0, 0), 
-                    UDim2New(0, EdgeThickness, 1, 0)), 
-                    Side = "L"
-                },
-
-                {Button = MakeEdge(
-                    "Right", 
-                    UDim2New(1, -EdgeThickness, 0, 0), 
-                    UDim2New(0, EdgeThickness, 1, 0)), 
-                    Side = "R"
-                },
-
-                {Button = MakeEdge(
-                    "Top", UDim2New(0, 0, 0, 0), 
-                    UDim2New(1, 0, 0, EdgeThickness)), 
-                    Side = "T"
-                },
-
-                {Button = MakeEdge(
-                    "Bottom", 
-                    UDim2New(0, 0, 1, -EdgeThickness), 
-                    UDim2New(1, 0, 0, EdgeThickness)), 
-                    Side = "B"
-                },
+                {Button = MakeEdge(UDim2New(0, 0, 0, CornerSize), UDim2New(0, EdgeThickness, 1, -CornerSize * 2)), Side = "L"},
+                {Button = MakeEdge(UDim2New(1, -EdgeThickness, 0, CornerSize), UDim2New(0, EdgeThickness, 1, -CornerSize * 2)), Side = "R"},
+                {Button = MakeEdge(UDim2New(0, CornerSize, 0, 0), UDim2New(1, -CornerSize * 2, 0, EdgeThickness)), Side = "T"},
+                {Button = MakeEdge(UDim2New(0, CornerSize, 1, -EdgeThickness), UDim2New(1, -CornerSize * 2, 0, EdgeThickness)), Side = "B"},
+                {Button = MakeEdge(UDim2New(0, 0, 0, 0), UDim2New(0, CornerSize, 0, CornerSize)), Side = "TL"},
+                {Button = MakeEdge(UDim2New(1, -CornerSize, 0, 0), UDim2New(0, CornerSize, 0, CornerSize)), Side = "TR"},
+                {Button = MakeEdge(UDim2New(0, 0, 1, -CornerSize), UDim2New(0, CornerSize, 0, CornerSize)), Side = "BL"},
             }
 
+            local Highlight = function(Side)
+                for _, Value in Edges do
+                    local On = Value.Side == Side
+                    Value.Button.Instance.BackgroundTransparency = On and 0.35 or 1
+                end
+            end
+
+            for _, Value in Edges do
+                Value.Button:OnHover(function()
+                    if not Resizing then
+                        Highlight(Value.Side)
+                    end
+                end)
+
+                Value.Button:OnHoverLeave(function()
+                    if not Resizing then
+                        Highlight(nil)
+                    end
+                end)
+            end
+
             local BeginResizing = function(Side)
-                Resizing = true 
-                CurrentSide = Side 
+                -- Double-click an edge/corner: snap back to default size.
+                local Now = os.clock()
+                if Now - LastClick < 0.35 then
+                    LastClick = 0
+                    Tween:Create(Gui, TweenInfo.new(0.18, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = DefaultSize}, true)
+                    return
+                end
+                LastClick = Now
+
+                Resizing = true
+                CurrentSide = Side
+                pcall(function() Gui:SetAttribute("EdgeResizing", true) end)
 
                 StartMouse = UserInputService:GetMouseLocation()
 
                 -- store offsets, not absolute screen pos
                 StartPosition = Vector2New(Gui.Position.X.Offset, Gui.Position.Y.Offset)
                 StartSize = Vector2New(Gui.Size.X.Offset, Gui.Size.Y.Offset)
-                
-                for Index, Value in Edges do 
-                    Value.Button.Instance.BackgroundTransparency = (Value.Side == Side) and 0 or 1
-                end
+
+                Highlight(Side)
             end
 
             local EndResizing = function()
-                Resizing = false 
+                Resizing = false
                 CurrentSide = nil
-
-                for Index, Value in Edges do 
-                    Value.Button.Instance.BackgroundTransparency = 1
-                end
+                pcall(function() Gui:SetAttribute("EdgeResizing", false) end)
+                Highlight(nil)
             end
 
-            for Index, Value in Edges do 
+            for _, Value in Edges do
                 Value.Button:Connect("InputBegan", function(Input)
                     if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                         BeginResizing(Value.Side)
@@ -594,43 +620,71 @@ local Library do
                 end
             end)
 
+            local function HasSide(Set, Want)
+                return Set == Want or Set == "T" .. Want or Set == "B" .. Want or Set == Want .. "L" or Set == Want .. "R" or (#Set == 2 and (Set:sub(1, 1) == Want or Set:sub(2, 2) == Want))
+            end
+
             Library:Connect(RunService.RenderStepped, function()
-                if not Resizing or not CurrentSide then 
-                    return 
+                if not Resizing or not CurrentSide then
+                    return
                 end
+
+                -- Mouse deltas are screen pixels; GUI offsets are unscaled.
+                -- Without this division dragging drifts whenever UIScale ~= 1.
+                local Scale = (Library.UIScale and Library.UIScale.Instance and Library.UIScale.Instance.Scale) or 1
 
                 local MouseLocation = UserInputService:GetMouseLocation()
-                local dx = MouseLocation.X - StartMouse.X
-                local dy = MouseLocation.Y - StartMouse.Y
-            
-                local x, y = StartPosition.X, StartPosition.Y
-                local w, h = StartSize.X, StartSize.Y
+                local dx = (MouseLocation.X - StartMouse.X) / Scale
+                local dy = (MouseLocation.Y - StartMouse.Y) / Scale
 
-                if CurrentSide == "L" then
-                    x = StartPosition.X + dx
+                local w, h = StartSize.X, StartSize.Y
+                local Left = HasSide(CurrentSide, "L")
+                local Right = HasSide(CurrentSide, "R")
+                local Top = HasSide(CurrentSide, "T")
+                local Bottom = HasSide(CurrentSide, "B")
+
+                if Left then
                     w = StartSize.X - dx
-                elseif CurrentSide == "R" then
+                elseif Right then
                     w = StartSize.X + dx
-                elseif CurrentSide == "T" then
-                    y = StartPosition.Y + dy
+                end
+
+                if Top then
                     h = StartSize.Y - dy
-                elseif CurrentSide == "B" then
+                elseif Bottom then
                     h = StartSize.Y + dy
                 end
-            
-                if w < Minimum.X then
-                    if CurrentSide == "L" then
-                        x = x - (Minimum.X - w)
-                    end
-                    w = Minimum.X
+
+                -- Live caps: a real minimum (old code used the initial size,
+                -- so the window could never shrink) and the viewport.
+                local Viewport = Camera.ViewportSize
+                local MaxW = Viewport.X / Scale
+                local MaxH = Viewport.Y / Scale
+                if Maximum.X < 9000 then MaxW = math.min(MaxW, Maximum.X) end
+                if Maximum.Y < 9000 then MaxH = math.min(MaxH, Maximum.Y) end
+
+                w = MathClamp(w, Minimum.X, math.max(Minimum.X, MaxW))
+                h = MathClamp(h, Minimum.Y, math.max(Minimum.Y, MaxH))
+
+                local x, y = StartPosition.X, StartPosition.Y
+
+                -- Anchor the opposite edge so it stays glued while L/T move.
+                if Left then
+                    x = (StartPosition.X + StartSize.X) - w
+                    x = MathClamp(x, 0, StartPosition.X + StartSize.X - Minimum.X)
+                    w = (StartPosition.X + StartSize.X) - x
                 end
-                if h < Minimum.Y then
-                    if CurrentSide == "T" then
-                        y = y - (Minimum.Y - h)
-                    end
-                    h = Minimum.Y
+
+                if Top then
+                    y = (StartPosition.Y + StartSize.Y) - h
+                    y = MathClamp(y, 0, StartPosition.Y + StartSize.Y - Minimum.Y)
+                    h = (StartPosition.Y + StartSize.Y) - y
                 end
-            
+
+                -- Never lose the window off-screen.
+                x = MathClamp(x, 0, math.max(0, Viewport.X / Scale - w))
+                y = MathClamp(y, 0, math.max(0, Viewport.Y / Scale - h))
+
                 Gui.Position = UDim2FromOffset(x, y)
                 Gui.Size = UDim2FromOffset(w, h)
             end)
@@ -2672,7 +2726,7 @@ local Library do
                 })  Items["MainFrame"]:AddToTheme({BackgroundColor3 = "Background"})
 
                 Items["MainFrame"]:MakeDraggable()
-                Items["MainFrame"]:MakeResizeable(Vector2New(Items["MainFrame"].Instance.AbsoluteSize.X, Items["MainFrame"].Instance.AbsoluteSize.Y), Vector2New(9999, 9999))
+                Items["MainFrame"]:MakeResizeable(Vector2New(440, 320), Vector2New(9999, 9999))
 
                 Items["Shadow"] = Instances:Create("ImageLabel", {
                     Name = "\0",
@@ -2741,21 +2795,73 @@ local Library do
                     Color = RGBSequence{RGBSequenceKeypoint(0, FromRGB(255, 255, 255)), RGBSequenceKeypoint(1, FromRGB(223, 223, 223))}
                 })
 
+                -- Drawn brand badge: always rendered, so the header never
+                -- shows a blank hole when Window.Logo is missing/unloadable.
+                -- A provided logo image sits on top of it.
                 Items["BrandGlow"] = Instances:Create("ImageLabel", {
                     Parent = Items["Top"].Instance,
                     Name = "\0",
-                    AnchorPoint = Vector2New(0, 0.5),
-                    Position = UDim2New(0, 8, 0.5, 0),
-                    Size = UDim2New(0, 38, 0, 38),
+                    AnchorPoint = Vector2New(0.5, 0.5),
+                    Position = UDim2New(0, 27, 0.5, 0),
+                    Size = UDim2New(0, 46, 0, 46),
                     BackgroundTransparency = 1,
                     BorderSizePixel = 0,
-                    Image = Window.Logo,
+                    Image = "http://www.roblox.com/asset/?id=18245826428",
                     ImageColor3 = Library.Theme["Accent"],
-                    ImageTransparency = 0.58,
-                    ScaleType = Enum.ScaleType.Fit,
-                    Visible = Window.Logo ~= "",
+                    ImageTransparency = 0.72,
+                    ScaleType = Enum.ScaleType.Slice,
+                    SliceCenter = RectNew(21, 21, 79, 79),
+                    Visible = true,
                     ZIndex = 19
                 }) Items["BrandGlow"]:AddToTheme({ImageColor3 = "Accent"})
+
+                Items["BrandBadge"] = Instances:Create("Frame", {
+                    Parent = Items["Top"].Instance,
+                    Name = "\0",
+                    AnchorPoint = Vector2New(0, 0.5),
+                    Position = UDim2New(0, 10, 0.5, 0),
+                    Size = UDim2New(0, 34, 0, 34),
+                    BorderSizePixel = 0,
+                    BackgroundColor3 = FromRGB(10, 35, 70),
+                    ZIndex = 20
+                }) Items["BrandBadge"]:AddToTheme({BackgroundColor3 = "Element"})
+
+                Instances:Create("UICorner", {
+                    Parent = Items["BrandBadge"].Instance,
+                    Name = "\0",
+                    CornerRadius = UDimNew(0, 9)
+                })
+
+                Instances:Create("UIStroke", {
+                    Parent = Items["BrandBadge"].Instance,
+                    Name = "\0",
+                    Color = Library.Theme["Accent"],
+                    Thickness = 1,
+                    Transparency = 0.25,
+                    ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                }):AddToTheme({Color = "Accent"})
+
+                Instances:Create("UIGradient", {
+                    Parent = Items["BrandBadge"].Instance,
+                    Name = "\0",
+                    Rotation = 45,
+                    Color = RGBSequence{RGBSequenceKeypoint(0, FromRGB(255, 255, 255)), RGBSequenceKeypoint(1, FromRGB(160, 180, 205))}
+                })
+
+                Items["BrandLetter"] = Instances:Create("TextLabel", {
+                    Parent = Items["BrandBadge"].Instance,
+                    Name = "\0",
+                    AnchorPoint = Vector2New(0.5, 0.5),
+                    Position = UDim2New(0.5, 0, 0.5, -1),
+                    Size = UDim2New(1, 0, 1, 0),
+                    BackgroundTransparency = 1,
+                    Text = "T",
+                    TextColor3 = FromRGB(235, 244, 255),
+                    FontFace = Library.Font,
+                    TextSize = 19,
+                    Visible = true,
+                    ZIndex = 21
+                })
 
                 Items["BrandImage"] = Instances:Create("ImageLabel", {
                     Parent = Items["Top"].Instance,
@@ -2768,23 +2874,14 @@ local Library do
                     Image = Window.Logo,
                     ScaleType = Enum.ScaleType.Fit,
                     Visible = Window.Logo ~= "",
-                    ZIndex = 21
+                    ZIndex = 22
                 })
 
-                Items["BrandLetter"] = Instances:Create("TextLabel", {
-                    Parent = Items["Top"].Instance,
+                Instances:Create("UICorner", {
+                    Parent = Items["BrandImage"].Instance,
                     Name = "\0",
-                    AnchorPoint = Vector2New(0, 0.5),
-                    Position = UDim2New(0, 10, 0.5, 0),
-                    Size = UDim2New(0, 34, 0, 34),
-                    BackgroundTransparency = 1,
-                    Text = "T",
-                    TextColor3 = Library.Theme["Accent"],
-                    FontFace = Library.Font,
-                    TextSize = 18,
-                    Visible = Window.Logo == "",
-                    ZIndex = 21
-                }) Items["BrandLetter"]:AddToTheme({TextColor3 = "Accent"})
+                    CornerRadius = UDimNew(0, 9)
+                })
 
                 Items["Username"] = Instances:Create("TextLabel", {
                     Parent = Items["Top"].Instance,
@@ -3892,15 +3989,16 @@ local Library do
             Library.SearchItems[Page] = { }
 
             function Page:Turn(Bool)
-                if Debounce then 
-                    return 
+                if Debounce then
+                    return
                 end
 
-                Page.Active = Bool 
-                
+                Page.Active = Bool
+
                 Debounce = true
-                Items["Page"].Instance.Visible = Bool 
+                Items["Page"].Instance.Visible = Bool
                 Items["Page"].Instance.Parent = Bool and Page.Window.Items["Content"].Instance or Library.UnusedHolder.Instance
+                Items["Page"].Instance.Position = Bool and UDim2New(0, 0, 0, 0) or UDim2New(0, 0, 0, 67)
 
                 if Page.Active then
                     Items["Icon"]:ChangeItemTheme({ImageColor3 = function()
@@ -3909,7 +4007,6 @@ local Library do
 
                     Items["Accent"]:Tween(TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2New(1, 0, 1, 0), BackgroundTransparency = 0})
                     Items["Icon"]:Tween(nil, {ImageColor3 = FromRGB(0, 0, 0), ImageTransparency = 0})
-                    Items["Page"]:Tween(TweenInfo.new(0.75, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2New(0, 0, 0, 0)})
                     Items["Gradient"].Instance.Enabled = true
 
                     Library.CurrentPage = Page
@@ -3918,34 +4015,18 @@ local Library do
 
                     Items["Accent"]:Tween(TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2New(0, 0, 0, 0), BackgroundTransparency = 1})
                     Items["Icon"]:Tween(nil, {ImageColor3 = Library.Theme.Text, ImageTransparency = 0.5})
-                    Items["Page"]:Tween(TweenInfo.new(0.75, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2New(0, 0, 0, 67)})
                     Items["Gradient"].Instance.Enabled = false
                 end
 
-                local AllInstances = Items["Page"].Instance:GetDescendants()
-                TableInsert(AllInstances, Items["Page"].Instance)
-                
-                local NewTween 
-
-                for Index, Value in AllInstances do 
-                    local TransparencyProperty = Tween:GetProperty(Value)
-
-                    if not TransparencyProperty then 
-                        continue
-                    end
-
-                    if type(TransparencyProperty) == "table" then 
-                        for _, Property in TransparencyProperty do 
-                            NewTween = Tween:FadeItem(Value, Property, Bool, Library.FadeSpeed)
-                        end
-                    else
-                        NewTween = Tween:FadeItem(Value, TransparencyProperty, Bool, Library.FadeSpeed)
-                    end
-                end
-
-                Library:Connect(NewTween.Tween.Completed, function()
-                    Debounce = false
-                end)
+                -- PERF: the old code built one TweenService tween per descendant
+                -- per transparency property on every tab switch (thousands of
+                -- simultaneous tweens on big tabs = the switch stutter), snapped
+                -- everything invisible first (flicker), and leaked a Completed
+                -- connection into Library.Connections per switch. Contents now
+                -- flip instantly with zero tweens; only the two icon/accent
+                -- micro-tweens above remain. Debounce releases immediately so
+                -- rapid tab clicks stay responsive instead of stacking tweens.
+                Debounce = false
             end
 
             local PageSearchData = Library.SearchItems[Page]
