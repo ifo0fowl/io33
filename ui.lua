@@ -3625,14 +3625,14 @@ local Library do
                                 BackgroundTransparency = 0.45,
                                 ZIndex = 100001
                             })
-                            Piece:AddToTheme({BackgroundColor3 = "Text"})
+                            Piece:AddToTheme({BackgroundColor3 = "Accent"})
                             TableInsert(Pieces, Piece)
                         end
 
-                        -- Clean bottom-right resize arrow.
-                        MakePiece(UDim2New(0, 9, 0, 9), UDim2New(0, 14, 0, 2), 45)
-                        MakePiece(UDim2New(0, 11, 0, 13), UDim2New(0, 8, 0, 2), 0)
-                        MakePiece(UDim2New(0, 14, 0, 11), UDim2New(0, 2, 0, 8), 0)
+                        -- Tapered triple-bar resize grip, stacked toward the corner.
+                        MakePiece(UDim2New(0, 12.5, 0, 5.5), UDim2New(0, 7, 0, 2), 45)
+                        MakePiece(UDim2New(0, 12.5, 0, 9.75), UDim2New(0, 6, 0, 2), 45)
+                        MakePiece(UDim2New(0, 12.5, 0, 14), UDim2New(0, 5, 0, 2), 45)
 
                         local SetPieces = function(Transparency)
                             for _, Piece in Pieces do
