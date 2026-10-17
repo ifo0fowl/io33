@@ -945,12 +945,19 @@ local Library do
 
     Library.LoadConfig = function(self, Config)
         local Decoded = HttpService:JSONDecode(Config)
+        local SavedTheme = TableClone(self.Theme)
 
         local Success, Result = Library:SafeCall(function()
             for Index, Value in Decoded do 
                 local SetFunction = Library.SetFlags[Index]
 
                 if not SetFunction then
+                    continue
+                end
+
+                -- Config picker state is not part of the saved state: loading a
+                -- config used to clear the selected config / name box.
+                if Index == "Configs" or Index == "ConfigName" then
                     continue
                 end
 
@@ -963,6 +970,13 @@ local Library do
                 end
             end
         end)
+
+        -- Configs must never repaint the window: re-apply the active theme after load.
+        if type(SavedTheme) == "table" then
+            for ThemeName, ThemeColor in pairs(SavedTheme) do
+                pcall(function() Library:ChangeTheme(ThemeName, ThemeColor) end)
+            end
+        end
 
         return Success, Result
     end
@@ -2757,7 +2771,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(1, 0, 0, 50),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(26, 12, 48)
+                    BackgroundColor3 = FromRGB(28, 28, 32)
                 })  Items["Top"]:AddToTheme({BackgroundColor3 = "Inline"})
                 
                 Instances:Create("UICorner", {
@@ -2774,7 +2788,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(1, 0, 0, 8),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(26, 12, 48)
+                    BackgroundColor3 = FromRGB(28, 28, 32)
                 }):AddToTheme({BackgroundColor3 = "Inline"})
                 
                 Instances:Create("Frame", {
@@ -2822,7 +2836,7 @@ local Library do
                     Position = UDim2New(0, 10, 0.5, 0),
                     Size = UDim2New(0, 34, 0, 34),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(24, 10, 42),
+                    BackgroundColor3 = FromRGB(34, 34, 38),
                     ZIndex = 20
                 }) Items["BrandBadge"]:AddToTheme({BackgroundColor3 = "Element"})
 
@@ -2958,7 +2972,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(1, 0, 0, 50),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(26, 12, 48)
+                    BackgroundColor3 = FromRGB(28, 28, 32)
                 })  Items["Bottom"]:AddToTheme({BackgroundColor3 = "Inline"})
                 
                 Instances:Create("UICorner", {
@@ -2973,7 +2987,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(1, 0, 0, 8),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(26, 12, 48)
+                    BackgroundColor3 = FromRGB(28, 28, 32)
                 }):AddToTheme({BackgroundColor3 = "Inline"})
                 
                 Instances:Create("Frame", {
@@ -3251,7 +3265,7 @@ local Library do
                         Size = UDim2New(1, -16, 0, 22),
                         ZIndex = 2,
                         TextSize = 14,
-                        BackgroundColor3 = FromRGB(24, 10, 42)
+                        BackgroundColor3 = FromRGB(34, 34, 38)
                     }) SettingsItems["CloseButton"]:AddToTheme({BackgroundColor3 = "Element"})
                 
                     Instances:Create("UICorner", {
@@ -4082,7 +4096,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     BorderSizePixel = 0,
                     AutomaticSize = Enum.AutomaticSize.Y,
-                    BackgroundColor3 = FromRGB(26, 12, 48)
+                    BackgroundColor3 = FromRGB(28, 28, 32)
                 })  Items["Section"]:AddToTheme({BackgroundColor3 = "Inline"})
                 
                 Instances:Create("UICorner", {
