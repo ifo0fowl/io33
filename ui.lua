@@ -193,12 +193,12 @@ local Library do
     local Themes = {
         ["Preset"] = {
             ["Background"] = FromRGB(2, 3, 6),
-            ["Inline"] = FromRGB(5, 9, 15),
-            ["Outline"] = FromRGB(0, 120, 255),
+            ["Inline"] = FromRGB(20, 8, 36),
+            ["Outline"] = FromRGB(113, 31, 202),
             ["Text"] = FromRGB(220, 230, 245),
             ["Dark Text"] = FromRGB(125, 145, 175),
-            ["Element"] = FromRGB(5, 20, 42),
-            ["Accent"] = FromRGB(0, 140, 255)
+            ["Element"] = FromRGB(18, 8, 32),
+            ["Accent"] = FromRGB(113, 31, 202)
         }
     }
 
@@ -531,7 +531,7 @@ local Library do
                     Name = "\0",
                     Size = Size,
                     Position = Position,
-                    BackgroundColor3 = FromRGB(0, 140, 255),
+                    BackgroundColor3 = FromRGB(113, 31, 202),
                     BackgroundTransparency = 1,
                     Text = "",
                     BorderSizePixel = 0,
@@ -2757,7 +2757,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(1, 0, 0, 50),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(7, 10, 15)
+                    BackgroundColor3 = FromRGB(26, 12, 48)
                 })  Items["Top"]:AddToTheme({BackgroundColor3 = "Inline"})
                 
                 Instances:Create("UICorner", {
@@ -2774,7 +2774,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(1, 0, 0, 8),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(7, 10, 15)
+                    BackgroundColor3 = FromRGB(26, 12, 48)
                 }):AddToTheme({BackgroundColor3 = "Inline"})
                 
                 Instances:Create("Frame", {
@@ -2822,7 +2822,7 @@ local Library do
                     Position = UDim2New(0, 10, 0.5, 0),
                     Size = UDim2New(0, 34, 0, 34),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(5, 20, 42),
+                    BackgroundColor3 = FromRGB(24, 10, 42),
                     ZIndex = 20
                 }) Items["BrandBadge"]:AddToTheme({BackgroundColor3 = "Element"})
 
@@ -2845,7 +2845,7 @@ local Library do
                     Parent = Items["BrandBadge"].Instance,
                     Name = "\0",
                     Rotation = 45,
-                    Color = RGBSequence{RGBSequenceKeypoint(0, FromRGB(255, 255, 255)), RGBSequenceKeypoint(1, FromRGB(160, 180, 205))}
+                    Color = RGBSequence{RGBSequenceKeypoint(0, FromRGB(255, 255, 255)), RGBSequenceKeypoint(1, FromRGB(205, 190, 225))}
                 })
 
                 Items["BrandLetter"] = Instances:Create("TextLabel", {
@@ -2958,7 +2958,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(1, 0, 0, 50),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(7, 10, 15)
+                    BackgroundColor3 = FromRGB(26, 12, 48)
                 })  Items["Bottom"]:AddToTheme({BackgroundColor3 = "Inline"})
                 
                 Instances:Create("UICorner", {
@@ -2973,7 +2973,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(1, 0, 0, 8),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(7, 10, 15)
+                    BackgroundColor3 = FromRGB(26, 12, 48)
                 }):AddToTheme({BackgroundColor3 = "Inline"})
                 
                 Instances:Create("Frame", {
@@ -3251,7 +3251,7 @@ local Library do
                         Size = UDim2New(1, -16, 0, 22),
                         ZIndex = 2,
                         TextSize = 14,
-                        BackgroundColor3 = FromRGB(5, 20, 42)
+                        BackgroundColor3 = FromRGB(24, 10, 42)
                     }) SettingsItems["CloseButton"]:AddToTheme({BackgroundColor3 = "Element"})
                 
                     Instances:Create("UICorner", {
@@ -3835,13 +3835,14 @@ local Library do
                     Size = UDim2New(0, 30, 0, 30),
                     BorderSizePixel = 0,
                     TextSize = 14,
+                    BackgroundTransparency = 1,
                     BackgroundColor3 = FromRGB(4, 5, 7)
-                })  Items["Inactive"]:AddToTheme({BackgroundColor3 = "Background"})
+                })
                 
                 Instances:Create("UICorner", {
                     Parent = Items["Inactive"].Instance,
                     Name = "\0",
-                    CornerRadius = UDimNew(0, 6)
+                    CornerRadius = UDimNew(0, 8)
                 })
                 
                 Items["Icon"] = Instances:Create("ImageLabel", {
@@ -3962,13 +3963,13 @@ local Library do
                     BorderSizePixel = 0,
                     AnchorPoint = Vector2New(0.5, 0.5),
                     Position = UDim2New(0.5, 0, 0.5, 0),
-                    BackgroundColor3 = FromRGB(184, 212, 255)
+                    BackgroundColor3 = FromRGB(216, 190, 255)
                 })  Items["Accent"]:AddToTheme({BackgroundColor3 = "Accent"})
                 
                 Instances:Create("UICorner", {
                     Parent = Items["Accent"].Instance,
                     Name = "\0",
-                    CornerRadius = UDimNew(0, 6)
+                    CornerRadius = UDimNew(0, 8)
                 })
 
                 Items["Gradient"] = Instances:Create("UIGradient", {
@@ -4081,7 +4082,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     BorderSizePixel = 0,
                     AutomaticSize = Enum.AutomaticSize.Y,
-                    BackgroundColor3 = FromRGB(7, 10, 15)
+                    BackgroundColor3 = FromRGB(26, 12, 48)
                 })  Items["Section"]:AddToTheme({BackgroundColor3 = "Inline"})
                 
                 Instances:Create("UICorner", {
@@ -4109,7 +4110,7 @@ local Library do
                     Size = UDim2New(0, 25, 0, 25),
                     BorderSizePixel = 0,
                     TextSize = 14,
-                    BackgroundColor3 = FromRGB(184, 212, 255)
+                    BackgroundColor3 = FromRGB(216, 190, 255)
                 })
                 
                 Instances:Create("UICorner", {
@@ -4236,7 +4237,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(0, 0, 0, 0),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(184, 212, 255)
+                    BackgroundColor3 = FromRGB(216, 190, 255)
                 })  Items["Accent"]:AddToTheme({BackgroundColor3 = "Accent"})
                 
                 Instances:Create("UICorner", {
@@ -4523,7 +4524,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(0, 0, 0, 0),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(184, 212, 255)
+                    BackgroundColor3 = FromRGB(216, 190, 255)
                 })  Items["Accent"]:AddToTheme({BackgroundColor3 = "Accent"})
                 
                 Instances:Create("UICorner", {
@@ -4660,7 +4661,7 @@ local Library do
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(0.6000000238418579, 0, 1, 0),
                     BorderSizePixel = 0,
-                    BackgroundColor3 = FromRGB(184, 212, 255)
+                    BackgroundColor3 = FromRGB(216, 190, 255)
                 })  Items["Accent"]:AddToTheme({BackgroundColor3 = "Accent"})
                 
                 Instances:Create("UICorner", {
@@ -5203,7 +5204,7 @@ local Library do
                     Size = UDim2New(1, 0, 0, 20),
                     BorderSizePixel = 0,
                     TextSize = 14,
-                    BackgroundColor3 = FromRGB(184, 212, 255)
+                    BackgroundColor3 = FromRGB(216, 190, 255)
                 })  OptionButton:AddToTheme({BackgroundColor3 = "Accent"})
                 
                 Instances:Create("UIGradient", {
