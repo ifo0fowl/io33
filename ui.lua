@@ -3829,7 +3829,7 @@ local Library do
             local Page = {
                 Window = self,
 
-                Icon = Data.Icon or Data.icon or "131145598162617",
+                Icon = Data.Icon or Data.icon or "130166901872660",
                 Columns = Data.Columns or Data.columns or 2,
 
                 Items = { },
@@ -4081,7 +4081,7 @@ local Library do
                 Page = self,
 
                 Name = Data.Name or Data.name or "Section",
-                Icon = Data.Icon or Data.icon or "131145598162617",
+                Icon = Data.Icon or Data.icon or "130166901872660",
                 Side = Data.Side or Data.side or 1,
 
                 Items = { }
